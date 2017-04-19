@@ -6,6 +6,11 @@ using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Int
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Transform parentToReturnTo = null;
+    public enum Seme { CUORI, QUADRI, FIORI, PICCHE};
+    public enum Color { ROSSO, NERO};
+
+    public Seme thisSeme = Seme.CUORI;
+    public Color thisColor = Color.ROSSO;
 
     //Checking when starting to drag
     public void OnBeginDrag(PointerEventData eventData)
@@ -15,6 +20,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         parentToReturnTo = this.transform.parent;
         this.transform.SetParent(this.transform.parent.parent);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+        // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
+       // DropZone[] zones = GameObject.FindObjectsOfType<DropZone>(); 
     }
 
     //Checking when dragging
@@ -32,6 +40,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         this.transform.SetParent(parentToReturnTo);
         GetComponent<CanvasGroup>().blocksRaycasts = true;
+
+        //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
     }
 
 }
