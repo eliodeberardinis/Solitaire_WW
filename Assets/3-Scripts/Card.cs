@@ -7,6 +7,8 @@ using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Int
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Transform parentToReturnTo = null;
+    public Transform placeholderParent = null;
+
     public enum Seme { CUORI, QUADRI, FIORI, PICCHE};
     public enum Color { ROSSO, NERO};
 
@@ -39,6 +41,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         placeholder.transform.SetSiblingIndex(this.transform.GetSiblingIndex()); 
 
         parentToReturnTo = this.transform.parent;
+        placeholderParent = parentToReturnTo;
         this.transform.SetParent(this.transform.parent.parent);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
 
@@ -52,6 +55,30 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         Debug.Log("Dragging");
 
         this.transform.position = eventData.position; //Position where the mouse/finger is
+
+        if (placeholder.transform.parent != placeholderParent)
+        {
+            placeholder.transform.SetParent(placeholderParent);
+        }
+
+        int newSiblingIndex = placeholderParent.childCount;
+
+        for (int i = 0; i < placeholderParent.childCount; ++i)
+        {
+            if (this.transform.position.x < placeholderParent.GetChild(i).position.x)
+            {
+                newSiblingIndex = i;
+
+                if (placeholder.transform.GetSiblingIndex() < newSiblingIndex)
+                {
+                    newSiblingIndex--;
+                }
+                
+                break;
+            }
+        }
+
+        placeholder.transform.SetSiblingIndex(newSiblingIndex);
     }
 
     //Checking when finish dragging
@@ -60,6 +87,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         Debug.Log("EndDrag");
 
         this.transform.SetParent(parentToReturnTo);
+        this.transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
+
         GetComponent<CanvasGroup>().blocksRaycasts = true;
 
         //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
