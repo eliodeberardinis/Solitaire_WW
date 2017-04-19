@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Interfaces
 
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -12,10 +13,30 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public Seme thisSeme = Seme.CUORI;
     public Color thisColor = Color.ROSSO;
 
+    GameObject placeholder = null;
+
     //Checking when starting to drag
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log("BeginDrag");
+
+        //Creating a way to keep the position that the card had in the layout
+
+        placeholder = new GameObject();
+        placeholder.transform.SetParent(this.transform.parent);
+
+        LayoutElement le = placeholder.AddComponent<LayoutElement>();
+        le.preferredWidth = this.GetComponent<LayoutElement>().preferredWidth;
+        le.preferredHeight = this.GetComponent<LayoutElement>().preferredHeight;
+        le.flexibleWidth = 0;
+        le.flexibleHeight = 0;
+
+        //Getting correct size for empty gameobject (placeholder)
+        placeholder.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, this.GetComponent<LayoutElement>().preferredWidth);
+        placeholder.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, this.GetComponent<LayoutElement>().preferredHeight);
+
+        //To get the position of that card in the layout of the card and set the same one for the placeholder
+        placeholder.transform.SetSiblingIndex(this.transform.GetSiblingIndex()); 
 
         parentToReturnTo = this.transform.parent;
         this.transform.SetParent(this.transform.parent.parent);
@@ -42,6 +63,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         GetComponent<CanvasGroup>().blocksRaycasts = true;
 
         //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
+
+        Destroy(placeholder);
     }
+
 
 }
