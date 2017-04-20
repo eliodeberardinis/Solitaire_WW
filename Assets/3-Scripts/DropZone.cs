@@ -7,6 +7,9 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 {
     public Card.Seme thisSeme = Card.Seme.CUORI;
     public Card.Color thisColor = Card.Color.ROSSO;
+    public int currentValue = 0;
+
+    public bool isTestZone = false;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -25,9 +28,12 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         Card card = eventData.pointerDrag.GetComponent<Card>();
         if (card != null)
         {
-            if (thisSeme == card.thisSeme) //just for checking reasons. change it
+            if ((thisSeme == card.thisSeme && card.value == currentValue + 1) || isTestZone) //just for checking reasons. change it
             {
                 card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
+
+                if (!isTestZone)
+                { currentValue = card.value; }
             }            
         }
     }
