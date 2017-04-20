@@ -141,6 +141,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             if (!isFaceDown)
             { StartCoroutine(FlippingCardAnimation(this.transform, new Vector3(0, 180, 0), 3.0f)); }
 
+            //When it's flipped it won't react to OnPointerClick
             else { StartCoroutine(FlippingBackCardAnimation(this.transform, new Vector3(0, -180, 0), 3.0f)); }
 
             Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
