@@ -6,6 +6,7 @@ using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Int
 public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Card.Seme thisSeme = Card.Seme.CUORI;
+    public Card.Color thisColor = Card.Color.ROSSO;
 
     public void OnPointerEnter(PointerEventData eventData)
     {

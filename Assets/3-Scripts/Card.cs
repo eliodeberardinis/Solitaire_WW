@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Interfaces
 
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -8,6 +9,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public Transform parentToReturnTo = null;
     public enum Seme { CUORI, QUADRI, FIORI, PICCHE};
     public enum Color { ROSSO, NERO};
+    public int value = 0; //from Ace (1) to King (13)
+    public bool isFaceDown = false;
 
     public Seme thisSeme = Seme.CUORI;
     public Color thisColor = Color.ROSSO;
