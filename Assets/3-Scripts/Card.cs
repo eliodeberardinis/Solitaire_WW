@@ -15,6 +15,23 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public Seme thisSeme = Seme.CUORI;
     public Color thisColor = Color.ROSSO;
 
+    public Sprite frontImage;
+    public Sprite backImage;
+
+    void Start()
+    {
+        //Refactor and add to a "Flipping" function
+        if (isFaceDown)
+        {
+            Image BackgroundImage = this.transform.FindChild("Background").GetComponent<Image>();
+            BackgroundImage.sprite = backImage;
+            this.transform.Rotate(new Vector3(0,180,0));
+            this.transform.FindChild("Background").SetAsLastSibling();
+            this.transform.FindChild("Background").localScale = new Vector3(-1,1,1);
+
+        }
+    }
+
     //Checking when starting to drag
     public void OnBeginDrag(PointerEventData eventData)
     {
