@@ -21,7 +21,10 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         Debug.Log("BeginDrag");
 
         parentToReturnTo = this.transform.parent;
-        this.transform.SetParent(this.transform.parent.parent);
+
+        if (this.transform.parent.parent != null)
+        { this.transform.SetParent(this.transform.parent.parent); }
+
         GetComponent<CanvasGroup>().blocksRaycasts = false;
 
         // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
