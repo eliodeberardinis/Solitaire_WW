@@ -39,8 +39,6 @@ public class Table : MonoBehaviour, IPointerClickHandler {
             {
                 InitializeCardsTable(i);
             }
-            // turn last card of pile 
-            //tablePile[i].lastCard().flip();
         }
        
     }
@@ -106,6 +104,7 @@ public class Table : MonoBehaviour, IPointerClickHandler {
         }
 
         GameObject newCard = (GameObject)Instantiate(Resources.Load(name), pile.transform);
+        newCard.GetComponent<Card>().isFaceDown = true;
         newCard.name = numberImageCorrection + "_di_" + semeCarta;
 
         //Image cardNumberImage = newCard.transform.GetChild(2).GetComponent<Image>();
@@ -155,6 +154,7 @@ public class Table : MonoBehaviour, IPointerClickHandler {
 
         GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform.position, Quaternion.Euler(new Vector3(0,180,0)));
 
+        newCard.GetComponent<Card>().isFaceDown = true;
         newCard.transform.SetParent(this.transform.parent);
         newCard.name = numberImageCorrection + "_di_" + semeCarta;
         this.transform.parent.FindChild(newCard.name).SetAsFirstSibling();
@@ -169,7 +169,7 @@ public class Table : MonoBehaviour, IPointerClickHandler {
         mazzo.Add(newCard);
         ListIndex++;
 
-        StartCoroutine(Translation(newCard.transform, newCard.transform.position, TablePiles[tableNumber].transform.position, 100.0f, MoveType.Speed, tableNumber));
+        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 100.0f, MoveType.Speed, tableNumber));
        
     }
 
@@ -187,7 +187,15 @@ public class Table : MonoBehaviour, IPointerClickHandler {
 
         thisTransform.SetParent(TablePiles[tableNumber].transform);
         TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1).SetSiblingIndex(TablePiles[tableNumber].transform.childCount - 2);
+
+        if (TablePiles[tableNumber].transform.childCount == tableNumber + 2)
+        {
+            Card lastCard = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2).GetComponent<Card>();
+            StartCoroutine(lastCard.FlippingBackCardAnimation(TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2), new Vector3(0, -180, 0), 1.0f));
+            TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2).SetParent(TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1));
+        }
     }
+
 
 
 
