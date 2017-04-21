@@ -29,9 +29,6 @@ public class Table : MonoBehaviour, IPointerClickHandler {
 
         ShuffleMazzo();
         distributeCards();
-        //InitializeCardsTable();
-
-
     }
 
     public void distributeCards()
@@ -157,8 +154,10 @@ public class Table : MonoBehaviour, IPointerClickHandler {
         }
 
         GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform.position, Quaternion.Euler(new Vector3(0,180,0)));
+
         newCard.transform.SetParent(this.transform.parent);
         newCard.name = numberImageCorrection + "_di_" + semeCarta;
+        this.transform.parent.FindChild(newCard.name).SetAsFirstSibling();
 
         //Image cardNumberImage = newCard.transform.GetChild(2).GetComponent<Image>();
         Image cardNumberImage = newCard.transform.FindChild("Number").GetComponent<Image>();
@@ -187,6 +186,7 @@ public class Table : MonoBehaviour, IPointerClickHandler {
         }
 
         thisTransform.SetParent(TablePiles[tableNumber].transform);
+        TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1).SetSiblingIndex(TablePiles[tableNumber].transform.childCount - 2);
     }
 
 
