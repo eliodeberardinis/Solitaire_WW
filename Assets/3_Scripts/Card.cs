@@ -21,15 +21,15 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     void Start()
     {
-        if (!isFlippingOn)
-        {
-            if (!isFaceDown)
-            { StartCoroutine(FlippingCardAnimation(this.transform, new Vector3(0, 180, 0), 3.0f)); }
+        //if (!isFlippingOn)
+        //{
+        //    if (!isFaceDown)
+        //    { StartCoroutine(FlippingCardAnimation(this.transform, new Vector3(0, 180, 0), 3.0f)); }
 
-            else { StartCoroutine(FlippingBackCardAnimation(this.transform, new Vector3(0, -180, 0), 3.0f)); }
+        //    else { StartCoroutine(FlippingBackCardAnimation(this.transform, new Vector3(0, -180, 0), 3.0f)); }
 
-            Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
-        }
+        //    Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
+        //}
 
     }
 
@@ -68,6 +68,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
     }
 
+    //Make Only 1 Function for these
     public IEnumerator FlippingCardAnimation(Transform thisTransform, Vector3 degrees, float time)
     {
         isFlippingOn = true;
