@@ -19,6 +19,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public Sprite frontImage;
     public Sprite backImage;
 
+    GameObject Canvas;
+
     void Start()
     {
         //if (!isFlippingOn)
@@ -31,6 +33,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         //    Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
         //}
 
+        Canvas = GameObject.FindGameObjectWithTag("Canvas");
+
     }
 
     //Checking when starting to drag
@@ -40,8 +44,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         parentToReturnTo = this.transform.parent;
 
-        if (this.transform.parent.parent != null)
-        { this.transform.SetParent(this.transform.parent.parent); }
+        if (Canvas != null)
+        { this.transform.SetParent(Canvas.transform); }
 
         GetComponent<CanvasGroup>().blocksRaycasts = false;
 

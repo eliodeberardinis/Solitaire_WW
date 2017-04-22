@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Table : MonoBehaviour, IPointerClickHandler {
+public class GameController : MonoBehaviour, IPointerClickHandler {
 
     public List<GameObject> mazzo = new List<GameObject>();
     public List<int> valoriMazzo = new List<int>();
@@ -69,6 +69,7 @@ public class Table : MonoBehaviour, IPointerClickHandler {
         Debug.Log("Clicked");
     }
 
+    //Change this not to instantiate but just to flip next card on deck and put on discard pile
     void InstantiateCard()
     {
         string name = "4-Prefabs/CardCuori";

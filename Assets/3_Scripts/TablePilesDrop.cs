@@ -31,6 +31,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         {
             if ((thisColor != card.thisColor && card.value == currentValue - 1)) //just for checking reasons. change it
             {
+                //Here get the reference to the previous parent and if it's a tablepile update the value. if it's the discard pile update that
                 card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
 
                 currentValue = card.value;
