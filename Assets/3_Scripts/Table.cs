@@ -193,6 +193,12 @@ public class Table : MonoBehaviour, IPointerClickHandler {
             Card lastCard = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2).GetComponent<Card>();
             StartCoroutine(lastCard.FlippingBackCardAnimation(TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2), new Vector3(0, -180, 0), 1.0f));
             TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2).SetParent(TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1));
+
+            GameObject frontCards = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1).gameObject;
+            TablePilesDrop thisTablePileDrop = frontCards.GetComponent<TablePilesDrop>();
+            thisTablePileDrop.thisColor = lastCard.thisColor;
+            thisTablePileDrop.currentValue = lastCard.value;
+            thisTablePileDrop.thisSeme = lastCard.thisSeme;
         }
     }
 
