@@ -10,7 +10,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     public Card.Color thisColor = Card.Color.ROSSO;
     public int currentValue = 0;
 
-    public List<Card> thisPileList = new List<Card>();
+    public List<GameObject> thisPileList = new List<GameObject>();
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -36,6 +36,8 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
 
                 currentValue = card.value;
                 thisColor = card.thisColor;
+                thisSeme = card.thisSeme;
+                thisPileList.Add(card.gameObject);
             }
         }
     }

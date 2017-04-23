@@ -200,6 +200,7 @@ public class GameController : MonoBehaviour, IPointerClickHandler {
             thisTablePileDrop.thisColor = lastCard.thisColor;
             thisTablePileDrop.currentValue = lastCard.value;
             thisTablePileDrop.thisSeme = lastCard.thisSeme;
+            thisTablePileDrop.thisPileList.Add(lastCard.gameObject);
         }
     }
 
