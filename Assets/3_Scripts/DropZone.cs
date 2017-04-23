@@ -26,15 +26,19 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         Debug.Log(eventData.pointerDrag.name + "Placed on: " + gameObject.name);
 
         Card card = eventData.pointerDrag.GetComponent<Card>();
-        if (card != null)
-        {
-            if ((thisSeme == card.thisSeme && card.value == currentValue + 1) || isTestZone) //just for checking reasons. change it
-            {
-                card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
 
-                if (!isTestZone)
-                { currentValue = card.value; }
-            }            
+        if (card.gameObject.transform.parent.childCount == 1) //If it's just one card you can drop it on the dropping zones
+        { 
+            if (card != null)
+            {
+                if ((thisSeme == card.thisSeme && card.value == currentValue + 1) || isTestZone) //just for checking reasons. change it
+                {
+                    card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
+
+                    if (!isTestZone)
+                    { currentValue = card.value; }
+                }
+            }
         }
     }
 

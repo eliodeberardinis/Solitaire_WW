@@ -7,8 +7,8 @@ using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Int
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Transform parentToReturnTo = null;
-    public enum Seme { CUORI, QUADRI, FIORI, PICCHE};
-    public enum Color { ROSSO, NERO};
+    public enum Seme { CUORI, QUADRI, FIORI, PICCHE, NEUTRAL_SEME};
+    public enum Color { ROSSO, NERO, NEUTRAL_COLOR};
     public int value = 0; //from Ace (1) to King (13)
     public bool isFaceDown = false;
     public bool isFlippingOn = false;
@@ -18,6 +18,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public Sprite frontImage;
     public Sprite backImage;
+
+    GameObject draggingItem;
 
     GameObject Canvas;
 
@@ -34,6 +36,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         //}
 
         Canvas = GameObject.FindGameObjectWithTag("Canvas");
+        draggingItem = GameObject.FindGameObjectWithTag("draggingItem");
 
     }
 
@@ -45,9 +48,19 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         parentToReturnTo = this.transform.parent;
 
         if (Canvas != null)
-        { this.transform.SetParent(Canvas.transform); }
+        {
+            //this.transform.SetParent(Canvas.transform);
+            draggingItem.transform.position = eventData.position;
+            this.transform.SetParent(draggingItem.transform);
 
-        GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
+
+        if (parentToReturnTo.gameObject.tag == "FrontPile")
+        {
+
+        }
+
+            GetComponent<CanvasGroup>().blocksRaycasts = false;
 
         // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
        // DropZone[] zones = GameObject.FindObjectsOfType<DropZone>(); 
@@ -58,7 +71,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         Debug.Log("Dragging");
 
-        this.transform.position = eventData.position; //Position where the mouse/finger is
+        //this.transform.position = eventData.position; //Position where the mouse/finger is
+
+        draggingItem.transform.position = eventData.position;
     }
 
     //Checking when finish dragging
