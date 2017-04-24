@@ -4,18 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class GameController : MonoBehaviour, IPointerClickHandler {
+public class GameController : MonoBehaviour {
 
+    public static int ListIndex = 0;
     public List<GameObject> mazzo = new List<GameObject>();
     public List<int> valoriMazzo = new List<int>();
-
-    public List<GameObject> TablePiles = new List<GameObject>();
-
-    public int ListIndex = 0;
-
-    public GameObject pile;
-
+    public List<GameObject> TablePiles = new List<GameObject>();  
     public List<Sprite> cardValueImageList = new List<Sprite>();
+    public GameObject Deck;
 
     public enum MoveType { Time, Speed }
 
@@ -70,65 +66,6 @@ public class GameController : MonoBehaviour, IPointerClickHandler {
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (ListIndex < 52)
-        { InstantiateCard(); }
-
-
-        Debug.Log("Clicked");
-    }
-
-    //Change this not to instantiate but just to flip next card on deck and put on discard pile
-    void InstantiateCard()
-    {
-        string name = "4-Prefabs/CardCuori";
-        string semeCarta = "Cuori";
-
-        int numberImageCorrection = valoriMazzo[ListIndex];
-
-        if (valoriMazzo[ListIndex] <= 13)
-        {
-            name = "4-Prefabs/CardCuori";
-            semeCarta = "Cuori";
-        }
-
-        else if (valoriMazzo[ListIndex] > 13 && valoriMazzo[ListIndex] <= 26)
-        {
-            name = "4-Prefabs/CardQuadri";
-            numberImageCorrection -= 13;
-            semeCarta = "Quadri";
-        }
-
-        else if (valoriMazzo[ListIndex] > 26 && valoriMazzo[ListIndex] <= 39)
-        {
-            name = "4-Prefabs/CardFiori";
-            numberImageCorrection -= 26;
-            semeCarta = "Fiori";
-        }
-
-        else
-        {
-            name = "4-Prefabs/CardPicche";
-            numberImageCorrection -= 39;
-            semeCarta = "Picche";
-        }
-
-        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), pile.transform);
-        newCard.GetComponent<Card>().isFaceDown = true;
-        newCard.name = numberImageCorrection + "_di_" + semeCarta;
-
-        //Image cardNumberImage = newCard.transform.GetChild(2).GetComponent<Image>();
-        Image cardNumberImage = newCard.transform.FindChild("Number").GetComponent<Image>();
-
-        Card cardScript = newCard.GetComponent<Card>();
-        cardScript.value = numberImageCorrection;
-
-        cardNumberImage.sprite = cardValueImageList[numberImageCorrection - 1];
-        mazzo.Add(newCard);
-        ListIndex++;
-    }
-
     void InitializeCardsTable(int tableNumber)
     {
         string name = "4-Prefabs/CardCuori";
@@ -163,7 +100,7 @@ public class GameController : MonoBehaviour, IPointerClickHandler {
             semeCarta = "Picche";
         }
 
-        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform.position, Quaternion.Euler(new Vector3(0,180,0)));
+        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform.position, Quaternion.Euler(new Vector3(0,180,0)));
 
         newCard.GetComponent<Card>().isFaceDown = true;
         newCard.transform.SetParent(this.transform.parent);
@@ -231,8 +168,4 @@ public class GameController : MonoBehaviour, IPointerClickHandler {
             thisTablePileDrop.thisPileList.Add(lastCard.gameObject);
         }
     }
-
-
-
-
 }
