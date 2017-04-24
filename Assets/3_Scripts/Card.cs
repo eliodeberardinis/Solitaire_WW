@@ -96,6 +96,8 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         Debug.Log("EndDrag");
 
+        //this.transform.SetParent(parentToReturnTo);
+
         if (this.transform.parent.childCount > 1)
         {
             Transform draggingItemTransform = this.transform.parent;
