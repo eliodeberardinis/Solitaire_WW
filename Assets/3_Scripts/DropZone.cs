@@ -32,7 +32,7 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         { 
             if (card != null)
             {
-                if ((thisSeme == card.thisSeme && card.value == currentValue + 1)) //just for checking reasons. change it
+                if ((thisSeme == card.thisSeme && card.value == currentValue + 1))
                 {
                     thisDropZoneList.Add(card.gameObject);
 
@@ -47,11 +47,8 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                         Transform draggingItemTransform = card.gameObject.transform.parent;
                         card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
                         Card lastCard = card;
-                        
-
+                    
                         currentValue = lastCard.value;
-                        //thisColor = lastCard.thisColor;
-                        //thisSeme = lastCard.thisSeme;
 
                         if (oldPile.thisPileList.Count == 0) //If the front list has 0 cards
                         {

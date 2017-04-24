@@ -93,10 +93,18 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                         oldPile.thisSeme = nextCardInList.thisSeme;
                     }
 
-                    //thisPileList.Add(card.gameObject);
                 }
 
-                else { }//if it's a discard pile
+                else
+                {
+                    card.parentToReturnTo = this.transform;
+                    currentValue = card.value;
+                    thisColor = card.thisColor;
+                    thisSeme = card.thisSeme;
+                    thisPileList.Add(card.gameObject);
+
+                    //Here Update the Discard Pile
+                }
             }
         }
     }
