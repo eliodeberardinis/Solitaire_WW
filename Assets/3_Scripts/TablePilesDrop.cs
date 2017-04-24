@@ -64,15 +64,15 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 }
 
                 Transform draggingItemTransform = card.gameObject.transform.parent;
-                //card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
+                card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
                 Card lastCard = card;
 
-                while (draggingItemTransform.childCount != 0)
-                {
-                    draggingItemTransform.GetChild(0).gameObject.GetComponent<Card>().parentToReturnTo = this.transform;
-                    lastCard = draggingItemTransform.GetChild(0).gameObject.GetComponent<Card>();
-                    thisPileList.Add(card.gameObject);
-                }
+                //while (draggingItemTransform.childCount != 0)
+                //{
+                //    draggingItemTransform.GetChild(0).gameObject.GetComponent<Card>().parentToReturnTo = this.transform;
+                //    lastCard = draggingItemTransform.GetChild(0).gameObject.GetComponent<Card>();
+                //    thisPileList.Add(card.gameObject);
+                //}
 
                 currentValue = lastCard.value;
                 thisColor = lastCard.thisColor;

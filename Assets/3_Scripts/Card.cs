@@ -69,9 +69,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                 for ( i+=1; i < thisCardTablePile.thisPileList.Count; ++i)
                 {
                     thisCardTablePile.thisPileList[i].GetComponent<Card>().parentToReturnTo = thisCardTablePile.thisPileList[i].gameObject.transform.parent;
-
-                    // print(thisCardTablePile.thisPileList[i].gameObject.transform.parent);
-
                     thisCardTablePile.thisPileList[i].transform.SetParent(draggingItem.transform);
                     //thisCardTablePile.thisPileList[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
                 }
@@ -99,7 +96,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         Debug.Log("EndDrag");
 
-        if (this.transform.parent.childCount >= 1)
+        if (this.transform.parent.childCount > 1)
         {
             Transform draggingItemTransform = this.transform.parent;
             while (draggingItemTransform.childCount != 0)
