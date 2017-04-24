@@ -34,34 +34,10 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 //Here get the reference to the previous parent and if it's a tablepile update the value. if it's the discard pile update that
                 if (card.parentToReturnTo.gameObject.tag == "FrontPile")
                 {
+                    //Getting references to the flipped and front list of its previous tablePile
                     TablePilesDrop oldPile = card.parentToReturnTo.gameObject.GetComponent<TablePilesDrop>();
-                    if (oldPile.thisPileList.Count == 1) //If the list only has 1 card (the currently dragged one)
-                    {
-                        //Check if the back cards have any cards left (MODIFY THIS)
-                        if (false)
-                        {
-
-                        }
-
-                        else
-                        {
-                            oldPile.currentValue = 14;
-                            oldPile.thisColor = Card.Color.NEUTRAL_COLOR;
-                            oldPile.thisSeme = Card.Seme.NEUTRAL_SEME;
-                        }
-                    }
-                    //Give the same value of the next card in the list
-                    else
-                    {
-                        Card nextCardInList = oldPile.thisPileList[oldPile.thisPileList.Count - 2].GetComponent<Card>();
-                        oldPile.currentValue = nextCardInList.value;
-                        oldPile.thisColor = nextCardInList.thisColor; ;
-                        oldPile.thisSeme = nextCardInList.thisSeme;
-                    }
-
+                    FlippedTablePiles oldFlippedTablePile = oldPile.gameObject.GetComponentInParent<FlippedTablePiles>();
                     oldPile.thisPileList.Remove(card.gameObject);
-                    //Remove also all the other cards going wih this one
-
 
                     Transform draggingItemTransform = card.gameObject.transform.parent;
                     card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
@@ -84,12 +60,21 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                     thisColor = lastCard.thisColor;
                     thisSeme = lastCard.thisSeme;
 
-                    if (oldPile.thisPileList.Count == 0) //If the list only has 1 card (the currently dragged one)
+                    if (oldPile.thisPileList.Count == 0) //If the front list has 0 cards
                     {
-                        //Check if the back cards have any cards left (MODIFY THIS)
-                        if (false)
+                        //Check if the back cards have any cards left
+                        if (oldFlippedTablePile.gameObject.transform.childCount > 1)
                         {
+                            Card lastFlippedCard = oldFlippedTablePile.thisFlippedPileList[oldFlippedTablePile.thisFlippedPileList.Count - 1].GetComponent<Card>();
+                            Debug.Log("Last Flipped Card: " + lastFlippedCard.gameObject);
+                            oldPile.currentValue = lastFlippedCard.value;
+                            oldPile.thisColor = lastFlippedCard.thisColor;
+                            oldPile.thisSeme = lastFlippedCard.thisSeme;
 
+                            oldFlippedTablePile.thisFlippedPileList.Remove(lastFlippedCard.gameObject);
+                            oldPile.thisPileList.Add(lastFlippedCard.gameObject);
+                            lastFlippedCard.gameObject.transform.SetParent(oldPile.gameObject.transform);
+                            StartCoroutine(lastFlippedCard.FlippingBackCardAnimation(lastFlippedCard.gameObject.transform, new Vector3(0, -180, 0), 1.0f));
                         }
 
                         else
