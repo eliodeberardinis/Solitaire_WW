@@ -74,7 +74,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                             oldFlippedTablePile.thisFlippedPileList.Remove(lastFlippedCard.gameObject);
                             oldPile.thisPileList.Add(lastFlippedCard.gameObject);
                             lastFlippedCard.gameObject.transform.SetParent(oldPile.gameObject.transform);
-                            StartCoroutine(lastFlippedCard.FlippingBackCardAnimation(lastFlippedCard.gameObject.transform, new Vector3(0, -180, 0), 1.0f));
+                            StartCoroutine(lastFlippedCard.FlippingBackCardAnimation(lastFlippedCard.gameObject.transform, new Vector3(0, -180, 0), 0.5f));
                         }
 
                         else
