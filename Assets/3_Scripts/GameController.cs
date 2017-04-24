@@ -28,6 +28,16 @@ public class GameController : MonoBehaviour, IPointerClickHandler {
         }
 
         ShuffleMazzo();
+
+        //For Debug Purposes
+        valoriMazzo[0] = 1;
+        valoriMazzo[2] = 15 + 13;
+        valoriMazzo[5] = 3;
+        valoriMazzo[9] = 17 + 13;
+        valoriMazzo[14] = 5;
+        valoriMazzo[20] = 19 + 13;
+        valoriMazzo[27] = 7;
+
         distributeCards();
     }
 
