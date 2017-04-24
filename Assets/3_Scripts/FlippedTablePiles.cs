@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class FlippedTablePiles : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public List<GameObject> thisFlippedPileList = new List<GameObject>();
+
+    // Use this for initialization
+    void Start ()
+    {
 		
 	}
 	

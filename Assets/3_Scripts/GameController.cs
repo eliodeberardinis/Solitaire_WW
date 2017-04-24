@@ -196,20 +196,38 @@ public class GameController : MonoBehaviour, IPointerClickHandler {
             yield return null;
         }
 
-        thisTransform.SetParent(TablePiles[tableNumber].transform);
-        TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1).SetSiblingIndex(TablePiles[tableNumber].transform.childCount - 2);
+        //Getting a reference to the flipped card object and script
+        FlippedTablePiles flippedTablePile = TablePiles[tableNumber].gameObject.GetComponent<FlippedTablePiles>();
 
-        if (TablePiles[tableNumber].transform.childCount == tableNumber + 2)
+        //Setting the parent to the flipped table object
+        thisTransform.SetParent(flippedTablePile.gameObject.transform);
+
+        //Adding it to the flipped table list structure
+        flippedTablePile.thisFlippedPileList.Add(thisTransform.gameObject);
+
+        //Correcting the order in the children for correct rendering
+        flippedTablePile.gameObject.transform.GetChild(flippedTablePile.gameObject.transform.childCount - 1).SetSiblingIndex(flippedTablePile.gameObject.transform.childCount - 2);
+
+        //Get the last card of that pile and flip it
+        if (flippedTablePile.gameObject.transform.childCount == tableNumber + 2)
         {
-            Card lastCard = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2).GetComponent<Card>();
-            StartCoroutine(lastCard.FlippingBackCardAnimation(TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2), new Vector3(0, -180, 0), 1.0f));
-            TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 2).SetParent(TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1));
+            //Get reference to last card
+            Card lastCard = flippedTablePile.thisFlippedPileList[flippedTablePile.thisFlippedPileList.Count - 1].GetComponent<Card>();
+            
+            //flip it
+            StartCoroutine(lastCard.FlippingBackCardAnimation(lastCard.gameObject.transform, new Vector3(0, -180, 0), 1.0f));
 
+            //Re parent the last card to the front pile
+            Transform frontPileTransform = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1);
+            lastCard.gameObject.transform.SetParent(frontPileTransform);
+
+            //Update the front and back pile lists and the front pile value
             GameObject frontCards = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1).gameObject;
             TablePilesDrop thisTablePileDrop = frontCards.GetComponent<TablePilesDrop>();
             thisTablePileDrop.thisColor = lastCard.thisColor;
             thisTablePileDrop.currentValue = lastCard.value;
             thisTablePileDrop.thisSeme = lastCard.thisSeme;
+            flippedTablePile.thisFlippedPileList.Remove(lastCard.gameObject);
             thisTablePileDrop.thisPileList.Add(lastCard.gameObject);
         }
     }
