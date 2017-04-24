@@ -57,12 +57,30 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         if (parentToReturnTo.gameObject.tag == "FrontPile")
         {
+            TablePilesDrop thisCardTablePile = parentToReturnTo.gameObject.GetComponent<TablePilesDrop>();
+            if (thisCardTablePile.thisPileList[thisCardTablePile.thisPileList.Count - 1] != this.gameObject)
+            {
+                int i = 0;
+                while (thisCardTablePile.thisPileList[i] != this.gameObject)
+                {
+                    i++;
+                }
 
+                for ( i+=1; i < thisCardTablePile.thisPileList.Count; ++i)
+                {
+                    thisCardTablePile.thisPileList[i].GetComponent<Card>().parentToReturnTo = thisCardTablePile.thisPileList[i].gameObject.transform.parent;
+
+                    // print(thisCardTablePile.thisPileList[i].gameObject.transform.parent);
+
+                    thisCardTablePile.thisPileList[i].transform.SetParent(draggingItem.transform);
+                    //thisCardTablePile.thisPileList[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
+                }
+            }
         }
 
             GetComponent<CanvasGroup>().blocksRaycasts = false;
 
-        // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
+       // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
        // DropZone[] zones = GameObject.FindObjectsOfType<DropZone>(); 
     }
 
@@ -81,7 +99,17 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         Debug.Log("EndDrag");
 
-        this.transform.SetParent(parentToReturnTo);
+        if (this.transform.parent.childCount >= 1)
+        {
+            Transform draggingItemTransform = this.transform.parent;
+            while (draggingItemTransform.childCount != 0)
+            {
+                draggingItemTransform.GetChild(0).SetParent(draggingItemTransform.GetChild(0).GetComponent<Card>().parentToReturnTo);
+            }
+        }
+
+        else { this.transform.SetParent(parentToReturnTo); }
+
         GetComponent<CanvasGroup>().blocksRaycasts = true;
 
         //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place

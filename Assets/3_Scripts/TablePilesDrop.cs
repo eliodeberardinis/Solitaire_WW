@@ -60,14 +60,25 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                     }
 
                     oldPile.thisPileList.Remove(card.gameObject);
+                    //Remove also all the other cards going wih this one
                 }
 
-                card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
+                Transform draggingItemTransform = card.gameObject.transform.parent;
+                //card.parentToReturnTo = this.transform; //On drop fires before end drag so I can override Parent to return to
+                Card lastCard = card;
 
-                currentValue = card.value;
-                thisColor = card.thisColor;
-                thisSeme = card.thisSeme;
-                thisPileList.Add(card.gameObject);
+                while (draggingItemTransform.childCount != 0)
+                {
+                    draggingItemTransform.GetChild(0).gameObject.GetComponent<Card>().parentToReturnTo = this.transform;
+                    lastCard = draggingItemTransform.GetChild(0).gameObject.GetComponent<Card>();
+                    thisPileList.Add(card.gameObject);
+                }
+
+                currentValue = lastCard.value;
+                thisColor = lastCard.thisColor;
+                thisSeme = lastCard.thisSeme;
+                
+                //add also all the other cards going with this one and set the seme of the pile to the last one
             }
         }
     }
