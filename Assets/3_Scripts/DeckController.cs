@@ -9,20 +9,49 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
 
     public GameObject pile;
     public enum MoveType { Time, Speed }
+    public List<GameObject> deckList = new List<GameObject>();
 
     GameController gameController;
+    DiscardPile discardPile;
 
     void Start()
     {
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        discardPile = pile.GetComponent<DiscardPile>();
+        
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (GameController.ListIndex < 52)
-        { InstantiateCard(); }
+      if (!Card.isFlippingOn && !GameController.isTranslationOn)
+        { 
+          if (GameController.ListIndex < 52)
+          {
+            InstantiateCard();
+          }
+
+          else if (deckList.Count == 0 && discardPile.discardPileList.Count != 0)
+          {
+            for (int i = discardPile.discardPileList.Count - 1; i >= 0; --i)
+            {
+              deckList.Add(discardPile.discardPileList[i]);
+              discardPile.discardPileList[i].GetComponent<Card>().FlipCard();
+              discardPile.discardPileList[i].transform.SetParent(this.gameObject.transform);
+              discardPile.discardPileList.RemoveAt(i);
+            }
+
+            this.gameObject.transform.GetChild(0).SetAsLastSibling();
+        }
+
+        else if (deckList.Count != 0)
+        {
+            StartCoroutine(gameController.Translation(deckList[deckList.Count - 1].transform, this.transform.position, pile.transform.position, 150.0f, GameController.MoveType.Speed, 0, false));
+            discardPile.discardPileList.Add(deckList[deckList.Count - 1]);
+            deckList.Remove(deckList[deckList.Count - 1]);
+        }
 
         Debug.Log("Clicked");
+      }
     }
 
     //Change this not to instantiate but just to flip next card on deck and put on discard pile
@@ -73,6 +102,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         gameController.mazzo.Add(newCard);
 
         StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 150.0f, GameController.MoveType.Speed, 0, false));
+        discardPile.discardPileList.Add(newCard);
         GameController.ListIndex++;
     }
 }

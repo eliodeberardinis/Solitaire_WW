@@ -11,7 +11,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public enum Color { ROSSO, NERO, NEUTRAL_COLOR};
     public int value = 0; //from Ace (1) to King (13)
     public bool isFaceDown = false;
-    public bool isFlippingOn = false;
+    public static bool isFlippingOn = false;
 
     public Seme thisSeme = Seme.CUORI;
     public Color thisColor = Color.ROSSO;
@@ -171,14 +171,16 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         isFlippingOn = false;
     }
 
-    void FlipCard()
+   public void FlipCard()
     {
+        isFlippingOn = true;
         Image BackgroundImage = this.transform.FindChild("Background").GetComponent<Image>();
         BackgroundImage.sprite = backImage;
         this.transform.Rotate(new Vector3(0, 180, 0));
         this.transform.FindChild("Background").SetAsLastSibling();
         this.transform.FindChild("Background").localScale = new Vector3(-1, 1, 1);
-
+        isFaceDown = true;
+        isFlippingOn = false;
     }
 
     public void OnPointerClick(PointerEventData eventData)

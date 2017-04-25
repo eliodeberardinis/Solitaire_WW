@@ -9,8 +9,12 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     public Card.Color thisColor = Card.Color.ROSSO;
     public int currentValue = 0;
     public List<GameObject> thisDropZoneList = new List<GameObject>();
+    GameObject discardPile;
 
-    public bool isTestZone = false;
+    void Start()
+    {
+        discardPile = GameObject.FindGameObjectWithTag("DiscardPile");
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -85,15 +89,11 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                     }
 
                     else
-
                     {
                         card.parentToReturnTo = this.transform;
                         currentValue = card.value;
-
-                        //Here Update the Discard Pile
+                        discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);
                     }
-
-
 
                 }
             }

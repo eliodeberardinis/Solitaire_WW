@@ -9,8 +9,13 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     public Card.Seme thisSeme = Card.Seme.CUORI;
     public Card.Color thisColor = Card.Color.ROSSO;
     public int currentValue = 0;
-
     public List<GameObject> thisPileList = new List<GameObject>();
+    GameObject discardPile;
+
+    void Start()
+    {
+        discardPile = GameObject.FindGameObjectWithTag("DiscardPile");
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -95,6 +100,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
 
                 }
 
+                //If the card comes from a discard Pile
                 else
                 {
                     card.parentToReturnTo = this.transform;
@@ -104,6 +110,8 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                     thisPileList.Add(card.gameObject);
 
                     //Here Update the Discard Pile
+                    discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);
+                    
                 }
             }
         }

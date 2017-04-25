@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class GameController : MonoBehaviour {
 
     public static int ListIndex = 0;
+    public static bool isTranslationOn = false;
     public List<GameObject> mazzo = new List<GameObject>();
     public List<int> valoriMazzo = new List<int>();
     public List<GameObject> TablePiles = new List<GameObject>();  
@@ -27,13 +28,13 @@ public class GameController : MonoBehaviour {
         ShuffleMazzo();
 
         //For Debug Purposes
-        valoriMazzo[0] = 1;
-        valoriMazzo[2] = 15 + 13;
-        valoriMazzo[5] = 3;
-        valoriMazzo[9] = 17 + 13;
-        valoriMazzo[14] = 5;
-        valoriMazzo[20] = 19 + 13;
-        valoriMazzo[27] = 7;
+        //valoriMazzo[0] = 1;
+        //valoriMazzo[2] = 15 + 13;
+        //valoriMazzo[5] = 3;
+        //valoriMazzo[9] = 17 + 13;
+        //valoriMazzo[14] = 5;
+        //valoriMazzo[20] = 19 + 13;
+        //valoriMazzo[27] = 7;
 
         distributeCards();
     }
@@ -116,7 +117,7 @@ public class GameController : MonoBehaviour {
 
         cardNumberImage.sprite = cardValueImageList[numberImageCorrection - 1];
         mazzo.Add(newCard);
-        ListIndex++;
+        GameController.ListIndex++;
 
         StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 100.0f, MoveType.Speed, tableNumber, true));
        
@@ -125,6 +126,7 @@ public class GameController : MonoBehaviour {
 
     public IEnumerator Translation(Transform thisTransform, Vector3 startPos, Vector3 endPos, float value, MoveType moveType, int tableNumber, bool isInitialization)
     {
+        isTranslationOn = true;
         float rate = (moveType == MoveType.Time) ? 1.0f / value : 1.0f / Vector3.Distance(startPos, endPos) * value;
         float t = 0.0f;
         while (t < 1.0)
@@ -179,5 +181,7 @@ public class GameController : MonoBehaviour {
             StartCoroutine(thisCard.FlippingBackCardAnimation(thisTransform, new Vector3(0, -180, 0), 0.5f));
             thisTransform.SetParent(discardPile.transform); //This is too specific. Change it later to make it for more general animations
         }
+
+        isTranslationOn = false;
      }
 }
