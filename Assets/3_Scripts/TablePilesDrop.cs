@@ -101,7 +101,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 }
 
                 //If the card comes from a discard Pile
-                else
+                else if ( card.parentToReturnTo.gameObject.tag == "DiscardPile")
                 {
                     card.parentToReturnTo = this.transform;
                     currentValue = card.value;
@@ -110,8 +110,18 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                     thisPileList.Add(card.gameObject);
 
                     //Here Update the Discard Pile
-                    discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);
-                    
+                    discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);          
+                }
+
+                else if (card.parentToReturnTo.gameObject.tag == "DropArea")
+                {
+                    //Here Update the DropArea
+                    card.parentToReturnTo.gameObject.GetComponent<DropZone>().currentValue -= 1;
+                    card.parentToReturnTo = this.transform;
+                    currentValue = card.value;
+                    thisColor = card.thisColor;
+                    thisSeme = card.thisSeme;
+                    thisPileList.Add(card.gameObject);               
                 }
             }
         }

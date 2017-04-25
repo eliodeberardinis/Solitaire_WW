@@ -28,13 +28,13 @@ public class GameController : MonoBehaviour {
         ShuffleMazzo();
 
         //For Debug Purposes
-        //valoriMazzo[0] = 1;
-        //valoriMazzo[2] = 15 + 13;
-        //valoriMazzo[5] = 3;
-        //valoriMazzo[9] = 17 + 13;
-        //valoriMazzo[14] = 5;
-        //valoriMazzo[20] = 19 + 13;
-        //valoriMazzo[27] = 7;
+        valoriMazzo[0] = 1;
+        valoriMazzo[2] = 15 + 13;
+        valoriMazzo[5] = 3;
+        valoriMazzo[9] = 17 + 13;
+        valoriMazzo[14] = 5;
+        valoriMazzo[20] = 19 + 13;
+        valoriMazzo[27] = 7;
 
         distributeCards();
     }
@@ -73,22 +73,22 @@ public class GameController : MonoBehaviour {
         string name = "4-Prefabs/CardCuori";
         string semeCarta = "Cuori";
 
-        int numberImageCorrection = valoriMazzo[ListIndex];
+        int numberImageCorrection = valoriMazzo[GameController.ListIndex];
 
-        if (valoriMazzo[ListIndex] <= 13)
+        if (valoriMazzo[GameController.ListIndex] <= 13)
         {
             name = "4-Prefabs/CardCuori";
             semeCarta = "Cuori";
         }
 
-        else if (valoriMazzo[ListIndex] > 13 && valoriMazzo[ListIndex] <= 26)
+        else if (valoriMazzo[GameController.ListIndex] > 13 && valoriMazzo[GameController.ListIndex] <= 26)
         {
             name = "4-Prefabs/CardQuadri";
             numberImageCorrection -= 13;
             semeCarta = "Quadri";
         }
 
-        else if (valoriMazzo[ListIndex] > 26 && valoriMazzo[ListIndex] <= 39)
+        else if (valoriMazzo[GameController.ListIndex] > 26 && valoriMazzo[GameController.ListIndex] <= 39)
         {
             name = "4-Prefabs/CardFiori";
             numberImageCorrection -= 26;

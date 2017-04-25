@@ -12,6 +12,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public int value = 0; //from Ace (1) to King (13)
     public bool isFaceDown = false;
     public static bool isFlippingOn = false;
+    public static bool isDragging = false;
 
     public Seme thisSeme = Seme.CUORI;
     public Color thisColor = Color.ROSSO;
@@ -43,76 +44,81 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     //Checking when starting to drag
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("BeginDrag");
+      if (!Card.isFlippingOn && !GameController.isTranslationOn && !isDragging)
+      {
+            Debug.Log("BeginDrag");
+            parentToReturnTo = this.transform.parent;
+            isDragging = true;
 
-        parentToReturnTo = this.transform.parent;
-
-        if (Canvas != null)
-        {
-            //this.transform.SetParent(Canvas.transform);
-            draggingItem.transform.position = eventData.position;
-            this.transform.SetParent(draggingItem.transform);
-
-        }
-
-        if (parentToReturnTo.gameObject.tag == "FrontPile")
-        {
-            TablePilesDrop thisCardTablePile = parentToReturnTo.gameObject.GetComponent<TablePilesDrop>();
-            if (thisCardTablePile.thisPileList[thisCardTablePile.thisPileList.Count - 1] != this.gameObject)
+            if (Canvas != null)
             {
-                int i = 0;
-                while (thisCardTablePile.thisPileList[i] != this.gameObject)
+                //this.transform.SetParent(Canvas.transform);
+                draggingItem.transform.position = eventData.position;
+                this.transform.SetParent(draggingItem.transform);
+            }
+            if (parentToReturnTo.gameObject.tag == "FrontPile")
+            {
+                TablePilesDrop thisCardTablePile = parentToReturnTo.gameObject.GetComponent<TablePilesDrop>();
+                if (thisCardTablePile.thisPileList[thisCardTablePile.thisPileList.Count - 1] != this.gameObject)
                 {
-                    i++;
-                }
+                    int i = 0;
+                    while (thisCardTablePile.thisPileList[i] != this.gameObject)
+                    {
+                        i++;
+                    }
 
-                for ( i+=1; i < thisCardTablePile.thisPileList.Count; ++i)
-                {
-                    thisCardTablePile.thisPileList[i].GetComponent<Card>().parentToReturnTo = thisCardTablePile.thisPileList[i].gameObject.transform.parent;
-                    thisCardTablePile.thisPileList[i].transform.SetParent(draggingItem.transform);
-                    //thisCardTablePile.thisPileList[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
+                    for (i += 1; i < thisCardTablePile.thisPileList.Count; ++i)
+                    {
+                        thisCardTablePile.thisPileList[i].GetComponent<Card>().parentToReturnTo = thisCardTablePile.thisPileList[i].gameObject.transform.parent;
+                        thisCardTablePile.thisPileList[i].transform.SetParent(draggingItem.transform);
+                        //thisCardTablePile.thisPileList[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
+                    }
                 }
             }
-        }
 
             GetComponent<CanvasGroup>().blocksRaycasts = false;
 
-       // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
-       // DropZone[] zones = GameObject.FindObjectsOfType<DropZone>(); 
-    }
+            // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
+            // DropZone[] zones = GameObject.FindObjectsOfType<DropZone>(); 
+         }
+      }
+
 
     //Checking when dragging
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("Dragging");
-
-        //this.transform.position = eventData.position; //Position where the mouse/finger is
-
-        draggingItem.transform.position = eventData.position;
+        if (isDragging)
+        {
+            Debug.Log("Dragging");
+            draggingItem.transform.position = eventData.position;
+        }     
     }
 
     //Checking when finish dragging
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("EndDrag");
-
-        //this.transform.SetParent(parentToReturnTo);
-
-        if (this.transform.parent.childCount > 1)
+        if (isDragging)
         {
-            Transform draggingItemTransform = this.transform.parent;
-            while (draggingItemTransform.childCount != 0)
+            Debug.Log("EndDrag");
+            //this.transform.SetParent(parentToReturnTo);
+
+            if (this.transform.parent.childCount > 1)
             {
-                draggingItemTransform.GetChild(0).SetParent(draggingItemTransform.GetChild(0).GetComponent<Card>().parentToReturnTo);
+                Transform draggingItemTransform = this.transform.parent;
+                while (draggingItemTransform.childCount != 0)
+                {
+                    draggingItemTransform.GetChild(0).SetParent(draggingItemTransform.GetChild(0).GetComponent<Card>().parentToReturnTo);
+                }
             }
+
+            else { this.transform.SetParent(parentToReturnTo); }
+
+            GetComponent<CanvasGroup>().blocksRaycasts = true;
+            isDragging = false;         
+            //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
         }
+      }
 
-        else { this.transform.SetParent(parentToReturnTo); }
-
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
-
-        //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
-    }
 
     //Make Only 1 Function for these
     public IEnumerator FlippingCardAnimation(Transform thisTransform, Vector3 degrees, float time)
@@ -185,7 +191,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //if (!isFlippingOn)
+        //if (!isFlippingOn && !GameController.isTranslationOn && !isDragging)
         //{
         //    if (!isFaceDown)
         //    { StartCoroutine(FlippingCardAnimation(this.transform, new Vector3(0, 180, 0), 3.0f)); }
@@ -196,9 +202,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         //    Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
         //}
 
-        Debug.Log("Card CLicked");
-
-        
+        Debug.Log("Card CLicked");       
     }
 
 }
