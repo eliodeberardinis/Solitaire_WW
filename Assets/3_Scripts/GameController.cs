@@ -6,13 +6,17 @@ using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour {
 
+    //Static Variables to control animations and detect global parameters for game state
     public static int ListIndex = 0;
     public static int score = 0;
     public static int moves = 0;
     public static bool isTranslationOn = false;
-    public List<GameObject> mazzo = new List<GameObject>();
+
+    //Public Objects directly referenced in the editor
+    public List<GameObject> mazzo = new List<GameObject>(); //Used in Debug to check no repeats of cards (Not used throuout the game, will be removed later)
     public List<int> valoriMazzo = new List<int>();
-    public List<GameObject> TablePiles = new List<GameObject>();  
+    public List<GameObject> TablePiles = new List<GameObject>();
+    public List<GameObject> DropAreas = new List<GameObject>();
     public List<Sprite> cardValueImageList = new List<Sprite>();
     public GameObject Deck;
     public GameObject discardPile;
@@ -21,46 +25,18 @@ public class GameController : MonoBehaviour {
 
     public enum MoveType { Time, Speed }
 
-    // Use this for initialization
+    // Here I initialize the deck and the table
     void Start ()
     {
         for (int i = 1; i <= 52; ++i)
         {
             valoriMazzo.Add(i);
         }
-
         ShuffleMazzo();
-
-        //For Debug Purposes
-        //valoriMazzo[0] = 1;
-        //valoriMazzo[2] = 15 + 13;
-        //valoriMazzo[5] = 3;
-        //valoriMazzo[9] = 17 + 13;
-        //valoriMazzo[14] = 5;
-        //valoriMazzo[20] = 19 + 13;
-        //valoriMazzo[27] = 7;
-
         distributeCards();
     }
 
-    public void distributeCards()
-    {
-        for (int i = 0; i < 7; i++)
-        {
-            for (int j = 0; j < i + 1; j++)
-            {
-                InitializeCardsTable(i);
-            }
-        }
-       
-    }
-
-    // Update is called once per frame
-    void Update ()
-    {
-		
-	}
-
+    //Here I shuffle the deck of ints
     void ShuffleMazzo()
     {
         for (int i = 0; i < valoriMazzo.Count; i++)
@@ -72,11 +48,23 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    //The cards are distributed on the table
+    public void distributeCards()
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            for (int j = 0; j < i + 1; j++)
+            {
+                InitializeCardsTable(i);
+            }
+        }   
+    }
+
+    //Here I create the cards during initialization and send them to the correct table
     void InitializeCardsTable(int tableNumber)
     {
         string name = "4-Prefabs/CardCuori";
         string semeCarta = "Cuori";
-
         int numberImageCorrection = valoriMazzo[GameController.ListIndex];
 
         if (valoriMazzo[GameController.ListIndex] <= 13)
@@ -84,21 +72,18 @@ public class GameController : MonoBehaviour {
             name = "4-Prefabs/CardCuori";
             semeCarta = "Cuori";
         }
-
         else if (valoriMazzo[GameController.ListIndex] > 13 && valoriMazzo[GameController.ListIndex] <= 26)
         {
             name = "4-Prefabs/CardQuadri";
             numberImageCorrection -= 13;
             semeCarta = "Quadri";
         }
-
         else if (valoriMazzo[GameController.ListIndex] > 26 && valoriMazzo[GameController.ListIndex] <= 39)
         {
             name = "4-Prefabs/CardFiori";
             numberImageCorrection -= 26;
             semeCarta = "Fiori";
         }
-
         else
         {
             name = "4-Prefabs/CardPicche";
@@ -106,34 +91,21 @@ public class GameController : MonoBehaviour {
             semeCarta = "Picche";
         }
 
+        //Card prefab initialization and correct orientation and rotation
         GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform.position, Quaternion.Euler(new Vector3(0,180,0)), this.transform);
-        //GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform, false);
-
         newCard.GetComponent<Card>().isFaceDown = true;
-
-        //newCard.transform.SetParent(this.transform.parent);
-        //newCard.transform.SetParent(Deck.transform.parent);
-
         newCard.name = numberImageCorrection + "_di_" + semeCarta;
-        //this.transform.parent.FindChild(newCard.name).SetAsFirstSibling();
-        //Deck.transform.FindChild(newCard.name).SetAsFirstSibling();
-
         Image cardNumberImage = newCard.transform.FindChild("Number").GetComponent<Image>();
-
         Card cardScript = newCard.GetComponent<Card>();
         cardScript.value = numberImageCorrection;
-
         cardNumberImage.sprite = cardValueImageList[numberImageCorrection - 1];
         mazzo.Add(newCard);
         GameController.ListIndex++;
-
-        //Add +45 on ipad +20 on PC for y, speed 100-150 on PC 250 on Ipad
-        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 100.0f, MoveType.Speed, tableNumber, true));
-       
+        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 650.0f, MoveType.Speed, tableNumber, 0));      
     }
 
-
-    public IEnumerator Translation(Transform thisTransform, Vector3 startPos, Vector3 endPos, float value, MoveType moveType, int tableNumber, bool isInitialization)
+    //Translation coroutine for the translation animation. Can be called by 3 different translation types: from deck to table, from deck to discard pile and from tables to the drop zones 
+    public IEnumerator Translation(Transform thisTransform, Vector3 startPos, Vector3 endPos, float value, MoveType moveType, int tableNumber, int translationType)
     {
         isTranslationOn = true;
         float rate = (moveType == MoveType.Time) ? 1.0f / value : 1.0f / Vector3.Distance(startPos, endPos) * value;
@@ -144,10 +116,9 @@ public class GameController : MonoBehaviour {
             thisTransform.position = Vector3.Lerp(startPos, endPos, Mathf.SmoothStep(0.0f, 1.0f, t));
             yield return null;
         }
-
-        if (isInitialization)
+        //The initial translation of the cards to the tables
+        if (translationType == 0)
         {
-
             //Getting a reference to the flipped card object and script
             FlippedTablePiles flippedTablePile = TablePiles[tableNumber].gameObject.GetComponent<FlippedTablePiles>();
 
@@ -182,16 +153,28 @@ public class GameController : MonoBehaviour {
                 thisTablePileDrop.thisSeme = lastCard.thisSeme;
                 flippedTablePile.thisFlippedPileList.Remove(lastCard.gameObject);
                 thisTablePileDrop.thisPileList.Add(lastCard.gameObject);
-                
             }
         }
-
-        else
+        //The translation from the deck to the discard pile
+        else if (translationType == 1)
         {
             Card thisCard = thisTransform.gameObject.GetComponent<Card>();
             StartCoroutine(thisCard.FlippingBackCardAnimation(thisTransform, new Vector3(0, -180, 0), 0.5f));
             thisTransform.SetParent(discardPile.transform);
             thisCard.parentToReturnTo = discardPile.transform;
+        }
+        //The translation from discard pile or table to drop areas
+        else if (translationType == 2)
+        {
+            for (int i = 0; i < DropAreas.Count; ++i)
+            {
+                DropZone thisDropZone = DropAreas[i].GetComponent<DropZone>();
+                if (thisDropZone.thisSeme == thisTransform.gameObject.GetComponent<Card>().thisSeme)
+                {
+                    thisTransform.SetParent(thisDropZone.gameObject.transform);
+                    break;
+                }
+            }
         }
 
         isTranslationOn = false;

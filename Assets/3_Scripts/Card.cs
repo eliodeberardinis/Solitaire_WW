@@ -6,22 +6,27 @@ using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Int
 
 public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    //Script for the Card's behaviour
+
+    //
     public Transform parentToReturnTo = null;
     public enum Seme { CUORI, QUADRI, FIORI, PICCHE, NEUTRAL_SEME};
     public enum Color { ROSSO, NERO, NEUTRAL_COLOR};
     public int value = 0; //from Ace (1) to King (13)
     public bool isFaceDown = false;
+
+    //Static bools to control animations and interactions with the rest of the cards
     public static bool isFlippingOn = false;
     public static bool isDragging = false;
 
+    //The cards attributes
     public Seme thisSeme = Seme.CUORI;
     public Color thisColor = Color.ROSSO;
-
     public Sprite frontImage;
     public Sprite backImage;
 
+    //References to an empty object used to drag cards around
     GameObject draggingItem;
-
     GameObject Canvas;
 
     //Timers for clicking actions
@@ -46,12 +51,12 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
             if (Canvas != null)
             {
-                //this.transform.SetParent(Canvas.transform);
                 draggingItem.transform.position = eventData.position;
                 this.transform.SetParent(draggingItem.transform);
             }
             if (parentToReturnTo.gameObject.tag == "FrontPile")
             {
+                //Refereces to the table pile it comes from
                 TablePilesDrop thisCardTablePile = parentToReturnTo.gameObject.GetComponent<TablePilesDrop>();
                 if (thisCardTablePile.thisPileList[thisCardTablePile.thisPileList.Count - 1] != this.gameObject)
                 {
@@ -60,20 +65,15 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                     {
                         i++;
                     }
-
                     for (i += 1; i < thisCardTablePile.thisPileList.Count; ++i)
                     {
                         thisCardTablePile.thisPileList[i].GetComponent<Card>().parentToReturnTo = thisCardTablePile.thisPileList[i].gameObject.transform.parent;
                         thisCardTablePile.thisPileList[i].transform.SetParent(draggingItem.transform);
-                        //thisCardTablePile.thisPileList[i].GetComponent<CanvasGroup>().blocksRaycasts = false;
                     }
                 }
             }
 
             GetComponent<CanvasGroup>().blocksRaycasts = false;
-
-            // As you start dragging you find all the droppable zones that match (example) oe on pointer enter and exit and check if that is a valid zone or not
-            // DropZone[] zones = GameObject.FindObjectsOfType<DropZone>(); 
          }
       }
 
@@ -83,7 +83,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         if (isDragging)
         {
-            //Debug.Log("Dragging");
             draggingItem.transform.position = eventData.position;
         }     
     }
@@ -93,9 +92,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         if (isDragging)
         {
-            Debug.Log("EndDrag");
-            //this.transform.SetParent(parentToReturnTo);
-
             if (this.transform.parent.childCount > 1)
             {
                 Transform draggingItemTransform = this.transform.parent;
@@ -104,16 +100,14 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                     draggingItemTransform.GetChild(0).SetParent(draggingItemTransform.GetChild(0).GetComponent<Card>().parentToReturnTo);
                 }
             }
-
             else { this.transform.SetParent(parentToReturnTo); }
-
             GetComponent<CanvasGroup>().blocksRaycasts = true;
             isDragging = false;         
         }
       }
 
 
-    // TO DO Make Only 1 Function for these two and pass parameters
+    // Animations to flip the cards from front to back and vice versa. TO DO Make Only 1 Function for these two and pass parameters
     public IEnumerator FlippingCardAnimation(Transform thisTransform, Vector3 degrees, float time)
     {
         isFlippingOn = true;
@@ -127,13 +121,12 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             t += Time.deltaTime * rate;
             if (t >= 0.5f && !isFaceDown)
             {
+                //Swapping assets and images to give the impression the card is flipping
                 Image BackgroundImage = this.transform.FindChild("Background").GetComponent<Image>();
                 BackgroundImage.sprite = backImage;
                 this.transform.FindChild("Background").SetAsLastSibling();
                 this.transform.FindChild("Background").localScale = new Vector3(-1, 1, 1);
-
                 isFaceDown = true;
-                Debug.Log("This many times called");
             }
 
             thisTransform.rotation = Quaternion.Slerp(startRotation, endRotation, t);
@@ -142,7 +135,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         isFlippingOn = false;
     }
-    public IEnumerator FlippingBackCardAnimation(Transform thisTransform, Vector3 degrees, float time)
+
+   //Same as before but in reverse
+   public IEnumerator FlippingBackCardAnimation(Transform thisTransform, Vector3 degrees, float time)
     {
         isFlippingOn = true;
         Quaternion startRotation = thisTransform.rotation;
@@ -159,18 +154,16 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                 BackgroundImage.sprite = frontImage;
                 this.transform.FindChild("Background").SetAsFirstSibling();
                 this.transform.FindChild("Background").localScale = new Vector3(1, 1, 1);
-
                 isFaceDown = false;
-                Debug.Log("This many times called");
             }
 
             thisTransform.rotation = Quaternion.Slerp(startRotation, endRotation, t);
             yield return null;
         }
-
         isFlippingOn = false;
     }
 
+   //Same as the previous 2 but without animations
    public void FlipCard()
     {
         isFlippingOn = true;
@@ -183,15 +176,14 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         isFlippingOn = false;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+   //Used to implement both a double click on keyboard or a single tap with fingers
+   public void OnPointerClick(PointerEventData eventData)
     {
         if (!Card.isFlippingOn && !GameController.isTranslationOn && !isDragging)
         {
             if ((Time.time > timerClicks && Time.time <= timerClicks + 0.5) || (numOfClicks == 1 && Time.time > timerDoubleClick && Time.time <= timerDoubleClick + 0.5))
         {
-            Debug.Log("Card CLicked");
             numOfClicks = 0;
-
             //Here send Card to drop zone if it's correct
             GameObject[] dropZones = GameObject.FindGameObjectsWithTag("DropArea");
             for (int i = 0; i < dropZones.Length; ++i)
@@ -199,7 +191,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
                 DropZone thisDropZone = dropZones[i].GetComponent<DropZone>();
                 if (thisDropZone.thisSeme == thisSeme)
                 {
-                    Debug.Log("Automatic called");
                     thisDropZone.AutomaticCard(this.gameObject);
                     break;
                 }
@@ -217,15 +208,11 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             numOfClicks = 1;
             timerDoubleClick = Time.time;
         }
-
-        Debug.Log("Number of Clicks: " + numOfClicks);
-    }
-
+      }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //Debug.Log("Enter");
         if (!Card.isFlippingOn && !GameController.isTranslationOn && !isDragging)
         {
             timerClicks = Time.time; //Used For Touch Devices 
@@ -235,6 +222,5 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void OnPointerExit(PointerEventData eventData)
     {
         numOfClicks = 0;
-       //Debug.Log("Exit");
     }
 }
