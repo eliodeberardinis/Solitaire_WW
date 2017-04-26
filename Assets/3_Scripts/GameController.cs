@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public class GameController : MonoBehaviour {
 
     public static int ListIndex = 0;
+    public static int score = 0;
+    public static int moves = 0;
     public static bool isTranslationOn = false;
     public List<GameObject> mazzo = new List<GameObject>();
     public List<int> valoriMazzo = new List<int>();
@@ -14,6 +16,8 @@ public class GameController : MonoBehaviour {
     public List<Sprite> cardValueImageList = new List<Sprite>();
     public GameObject Deck;
     public GameObject discardPile;
+    public Text ScoreText;
+    public Text MovesText;
 
     public enum MoveType { Time, Speed }
 
@@ -163,6 +167,7 @@ public class GameController : MonoBehaviour {
                 //Re parent the last card to the front pile
                 Transform frontPileTransform = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1);
                 lastCard.gameObject.transform.SetParent(frontPileTransform);
+                lastCard.parentToReturnTo = frontPileTransform;
 
                 //Update the front and back pile lists and the front pile value
                 GameObject frontCards = TablePiles[tableNumber].transform.GetChild(TablePiles[tableNumber].transform.childCount - 1).gameObject;
@@ -172,6 +177,7 @@ public class GameController : MonoBehaviour {
                 thisTablePileDrop.thisSeme = lastCard.thisSeme;
                 flippedTablePile.thisFlippedPileList.Remove(lastCard.gameObject);
                 thisTablePileDrop.thisPileList.Add(lastCard.gameObject);
+                
             }
         }
 
@@ -179,7 +185,8 @@ public class GameController : MonoBehaviour {
         {
             Card thisCard = thisTransform.gameObject.GetComponent<Card>();
             StartCoroutine(thisCard.FlippingBackCardAnimation(thisTransform, new Vector3(0, -180, 0), 0.5f));
-            thisTransform.SetParent(discardPile.transform); //This is too specific. Change it later to make it for more general animations
+            thisTransform.SetParent(discardPile.transform);
+            thisCard.parentToReturnTo = discardPile.transform;
         }
 
         isTranslationOn = false;

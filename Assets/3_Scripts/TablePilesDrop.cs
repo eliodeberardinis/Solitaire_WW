@@ -11,10 +11,12 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     public int currentValue = 0;
     public List<GameObject> thisPileList = new List<GameObject>();
     GameObject discardPile;
+    GameController gameController;
 
     void Start()
     {
         discardPile = GameObject.FindGameObjectWithTag("DiscardPile");
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -36,6 +38,11 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         {
             if ((thisColor != card.thisColor && card.value == currentValue - 1)) //Change it to only allow when there are not covered cards
             {
+                GameController.score += 5;
+                GameController.moves += 1;
+                gameController.ScoreText.text = GameController.score.ToString();
+                gameController.MovesText.text = GameController.moves.ToString();
+
                 //Here get the reference to the previous parent and if it's a tablepile update the value. if it's the discard pile update that
                 if (card.parentToReturnTo.gameObject.tag == "FrontPile")
                 {
@@ -79,6 +86,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                             oldFlippedTablePile.thisFlippedPileList.Remove(lastFlippedCard.gameObject);
                             oldPile.thisPileList.Add(lastFlippedCard.gameObject);
                             lastFlippedCard.gameObject.transform.SetParent(oldPile.gameObject.transform);
+                            lastFlippedCard.parentToReturnTo = oldPile.gameObject.transform;
                             StartCoroutine(lastFlippedCard.FlippingBackCardAnimation(lastFlippedCard.gameObject.transform, new Vector3(0, -180, 0), 0.5f));
                         }
 
@@ -101,7 +109,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 }
 
                 //If the card comes from a discard Pile
-                else if ( card.parentToReturnTo.gameObject.tag == "DiscardPile")
+                else if (card.parentToReturnTo.gameObject.tag == "DiscardPile")
                 {
                     card.parentToReturnTo = this.transform;
                     currentValue = card.value;
@@ -116,12 +124,13 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 else if (card.parentToReturnTo.gameObject.tag == "DropArea")
                 {
                     //Here Update the DropArea
+                    card.parentToReturnTo.gameObject.GetComponent<DropZone>().thisDropZoneList.RemoveAt(0);
                     card.parentToReturnTo.gameObject.GetComponent<DropZone>().currentValue -= 1;
                     card.parentToReturnTo = this.transform;
                     currentValue = card.value;
                     thisColor = card.thisColor;
                     thisSeme = card.thisSeme;
-                    thisPileList.Add(card.gameObject);               
+                    thisPileList.Add(card.gameObject);           
                 }
             }
         }

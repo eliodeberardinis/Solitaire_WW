@@ -10,6 +10,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
     public GameObject pile;
     public enum MoveType { Time, Speed }
     public List<GameObject> deckList = new List<GameObject>();
+    public Image deckImage;
 
     GameController gameController;
     DiscardPile discardPile;
@@ -23,12 +24,26 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+      if (deckList.Count == 1)
+      {
+            Debug.Log("Color change");
+            deckImage.color = new Color(deckImage.color.r, deckImage.color.g, deckImage.color.b, 0.5f);
+      }
+
       if (!Card.isFlippingOn && !GameController.isTranslationOn && !Card.isDragging)
       { 
+        //TO DO Instantiate all cards at the beginning and assign them to deck instead of this
         if (GameController.ListIndex < 52)
         {
           InstantiateCard();
-        }
+          GameController.moves += 1;
+          gameController.MovesText.text = GameController.moves.ToString();
+          if (GameController.ListIndex == 52)
+          {
+             Debug.Log("Color change");
+             deckImage.color = new Color(deckImage.color.r, deckImage.color.g, deckImage.color.b, 0.5f);
+          }
+       }
 
        else if (deckList.Count == 0 && discardPile.discardPileList.Count != 0)
        {
@@ -40,7 +55,12 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
            discardPile.discardPileList.RemoveAt(i);
          }
 
+          deckImage.color = new Color(deckImage.color.r, deckImage.color.g, deckImage.color.b, 1.0f);
           this.gameObject.transform.GetChild(0).SetAsLastSibling();
+          GameController.score = (int)GameController.score/2;
+          GameController.moves += 1;
+          gameController.ScoreText.text = GameController.score.ToString();
+          gameController.MovesText.text = GameController.moves.ToString();
        }
 
        else if (deckList.Count != 0)
@@ -48,9 +68,11 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
           StartCoroutine(gameController.Translation(deckList[deckList.Count - 1].transform, this.transform.position, pile.transform.position, 150.0f, GameController.MoveType.Speed, 0, false));
           discardPile.discardPileList.Add(deckList[deckList.Count - 1]);
           deckList.Remove(deckList[deckList.Count - 1]);
+          GameController.moves += 1;
+          gameController.MovesText.text = GameController.moves.ToString();
        }
 
-         Debug.Log("Clicked");
+         Debug.Log("Clicked Deck");
       }
     }
 

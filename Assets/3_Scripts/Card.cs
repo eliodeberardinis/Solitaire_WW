@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Interfaces
 
-public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Transform parentToReturnTo = null;
     public enum Seme { CUORI, QUADRI, FIORI, PICCHE, NEUTRAL_SEME};
@@ -24,21 +24,15 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     GameObject Canvas;
 
+    //Timers for clicking actions
+    float timerClicks = 0.0f;
+    int numOfClicks = 0;
+    float timerDoubleClick = 0.0f;
+
     void Start()
     {
-        //if (!isFlippingOn)
-        //{
-        //    if (!isFaceDown)
-        //    { StartCoroutine(FlippingCardAnimation(this.transform, new Vector3(0, 180, 0), 3.0f)); }
-
-        //    else { StartCoroutine(FlippingBackCardAnimation(this.transform, new Vector3(0, -180, 0), 3.0f)); }
-
-        //    Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
-        //}
-
         Canvas = GameObject.FindGameObjectWithTag("Canvas");
         draggingItem = GameObject.FindGameObjectWithTag("draggingItem");
-
     }
 
     //Checking when starting to drag
@@ -89,7 +83,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         if (isDragging)
         {
-            Debug.Log("Dragging");
+            //Debug.Log("Dragging");
             draggingItem.transform.position = eventData.position;
         }     
     }
@@ -115,12 +109,11 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
             GetComponent<CanvasGroup>().blocksRaycasts = true;
             isDragging = false;         
-            //EventSystem.current.RaycastAll(eventData, LIST)  // eventData is the position where it is now the mouse, and then it wants a list of all the objects that will hit so I can use this to check the card that I hit and check if it's a valid place
         }
       }
 
 
-    //Make Only 1 Function for these
+    // TO DO Make Only 1 Function for these two and pass parameters
     public IEnumerator FlippingCardAnimation(Transform thisTransform, Vector3 degrees, float time)
     {
         isFlippingOn = true;
@@ -130,6 +123,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         float t = 0.0f;
         while (t < 1.0f)
         {
+            if (isFlippingOn == false) { isFlippingOn = true; } // small hack to correct a bug during game initialization (Player able to move cards around)
             t += Time.deltaTime * rate;
             if (t >= 0.5f && !isFaceDown)
             {
@@ -148,7 +142,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
         isFlippingOn = false;
     }
-
     public IEnumerator FlippingBackCardAnimation(Transform thisTransform, Vector3 degrees, float time)
     {
         isFlippingOn = true;
@@ -158,6 +151,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         float t = 0.0f;
         while (t < 1.0f)
         {
+            if (isFlippingOn == false) { isFlippingOn = true; } // small hack to correct a bug during game initialization (Player able to move cards around)
             t += Time.deltaTime * rate;
             if (t >= 0.5f && isFaceDown)
             {
@@ -191,18 +185,50 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //if (!isFlippingOn && !GameController.isTranslationOn && !isDragging)
-        //{
-        //    if (!isFaceDown)
-        //    { StartCoroutine(FlippingCardAnimation(this.transform, new Vector3(0, 180, 0), 3.0f)); }
+        if ((Time.time > timerClicks && Time.time <= timerClicks + 0.5) || (numOfClicks == 1 && Time.time > timerDoubleClick && Time.time <= timerDoubleClick + 0.5))
+        {
+            Debug.Log("Card CLicked");
+            numOfClicks = 0;
 
-        //    //When it's flipped it won't react to OnPointerClick
-        //    else { StartCoroutine(FlippingBackCardAnimation(this.transform, new Vector3(0, -180, 0), 3.0f)); }
+            //Here send Card to drop zone if it's correct
+            GameObject[] dropZones = GameObject.FindGameObjectsWithTag("DropArea");
+            for (int i = 0; i < dropZones.Length; ++i)
+            {
+                DropZone thisDropZone = dropZones[i].GetComponent<DropZone>();
+                if (thisDropZone.thisSeme == thisSeme)
+                {
+                    Debug.Log("Automatic called");
+                    thisDropZone.AutomaticCard(this.gameObject);
+                    break;
+                }
+            }
+        }
 
-        //    Debug.Log("Clicked: " + gameObject + "isFaceDown: " + isFaceDown);
-        //}
+        if (numOfClicks == 0)
+        {
+            timerDoubleClick = Time.time;
+            numOfClicks++;
+        }
 
-        Debug.Log("Card CLicked");       
+        if (numOfClicks == 1 && Time.time > timerDoubleClick + 0.5)
+        {
+            numOfClicks = 1;
+            timerDoubleClick = Time.time;
+        }
+
+        Debug.Log("Number of Clicks: " + numOfClicks);
+
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+            //Debug.Log("Enter");
+            timerClicks = Time.time; //Used For Touch Devices 
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        numOfClicks = 0;
+       //Debug.Log("Exit");
+    }
 }
