@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems; //Used to implement the Object Drag and Drop Interfaces
 
 public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
@@ -9,10 +10,12 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     public Card.Color thisColor = Card.Color.ROSSO;
     public int currentValue = 0;
     public List<GameObject> thisDropZoneList = new List<GameObject>();
+    public Text winningScore;
     GameObject discardPile;
     GameObject[] allDropAreas;
     GameController gameController;
     GameObject winningScreen;
+    
 
     void Start()
     {
@@ -124,7 +127,8 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                                 if (completePiles == 4)
                                 {
                                     //Game is Won
-                                    gameController.ScoreText.text = "WON!!".ToString();
+                                    winningScreen.SetActive(true);
+                                    winningScore.text = GameController.score.ToString();
                                 }
                             }
                         }
@@ -234,7 +238,8 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                                 if (completePiles == 4)
                                 {
                                     //Game is Won
-                                    gameController.ScoreText.text = "WON!!".ToString();
+                                    winningScreen.SetActive(true);
+                                    winningScore.text = GameController.score.ToString();
                                 }
                             }
                         }
