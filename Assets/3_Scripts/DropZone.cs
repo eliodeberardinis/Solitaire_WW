@@ -10,12 +10,14 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     public int currentValue = 0;
     public List<GameObject> thisDropZoneList = new List<GameObject>();
     GameObject discardPile;
+    GameObject[] allDropAreas;
     GameController gameController;
 
     void Start()
     {
         discardPile = GameObject.FindGameObjectWithTag("DiscardPile");
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        allDropAreas = GameObject.FindGameObjectsWithTag("DropArea");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -102,6 +104,30 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                         discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);
                     }
 
+                    //Check if player has won
+                    if (card.value == 13)
+                    {
+                        int completePiles = 0;
+                        for (int i = 0; i < 4; ++i)
+                        {
+                            DropZone thisDropZone = allDropAreas[i].GetComponent<DropZone>();
+                            if (thisDropZone.thisDropZoneList.Count != 13)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                completePiles++;
+
+                                if (completePiles == 4)
+                                {
+                                    //Game is Won
+                                    gameController.ScoreText.text = "WON!!".ToString();
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -186,6 +212,30 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
                         card.parentToReturnTo = this.transform;
                         currentValue = card.value;
                         discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);
+                        card.gameObject.transform.SetParent(this.gameObject.transform);
+                    }
+
+                    //Check if player has won
+                    if (card.value == 13)
+                    {
+                        int completePiles = 0;
+                        for (int i = 0; i < 4; ++i)
+                        {
+                            DropZone thisDropZone = allDropAreas[i].GetComponent<DropZone>();
+                            if (thisDropZone.thisDropZoneList.Count != 13)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                completePiles++;
+                                if (completePiles == 4)
+                                {
+                                    //Game is Won
+                                    gameController.ScoreText.text = "WON!!".ToString();
+                                }
+                            }
+                        }
                     }
                 }
             }

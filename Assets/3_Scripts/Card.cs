@@ -185,7 +185,9 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if ((Time.time > timerClicks && Time.time <= timerClicks + 0.5) || (numOfClicks == 1 && Time.time > timerDoubleClick && Time.time <= timerDoubleClick + 0.5))
+        if (!Card.isFlippingOn && !GameController.isTranslationOn && !isDragging)
+        {
+            if ((Time.time > timerClicks && Time.time <= timerClicks + 0.5) || (numOfClicks == 1 && Time.time > timerDoubleClick && Time.time <= timerDoubleClick + 0.5))
         {
             Debug.Log("Card CLicked");
             numOfClicks = 0;
@@ -217,13 +219,17 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         }
 
         Debug.Log("Number of Clicks: " + numOfClicks);
+    }
 
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-            //Debug.Log("Enter");
+        //Debug.Log("Enter");
+        if (!Card.isFlippingOn && !GameController.isTranslationOn && !isDragging)
+        {
             timerClicks = Time.time; //Used For Touch Devices 
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
