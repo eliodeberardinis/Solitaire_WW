@@ -12,12 +12,14 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     GameObject discardPile;
     GameObject[] allDropAreas;
     GameController gameController;
+    GameObject winningScreen;
 
     void Start()
     {
         discardPile = GameObject.FindGameObjectWithTag("DiscardPile");
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         allDropAreas = GameObject.FindGameObjectsWithTag("DropArea");
+        winningScreen = GameObject.FindGameObjectWithTag("WinScreen");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
