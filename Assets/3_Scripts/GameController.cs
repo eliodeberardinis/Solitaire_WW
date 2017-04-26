@@ -106,14 +106,18 @@ public class GameController : MonoBehaviour {
             semeCarta = "Picche";
         }
 
-        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform.position, Quaternion.Euler(new Vector3(0,180,0)));
+        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform.position, Quaternion.Euler(new Vector3(0,180,0)), Deck.transform);
+        //GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform, false);
 
         newCard.GetComponent<Card>().isFaceDown = true;
-        newCard.transform.SetParent(this.transform.parent);
-        newCard.name = numberImageCorrection + "_di_" + semeCarta;
-        this.transform.parent.FindChild(newCard.name).SetAsFirstSibling();
 
-        //Image cardNumberImage = newCard.transform.GetChild(2).GetComponent<Image>();
+        //newCard.transform.SetParent(this.transform.parent);
+        //newCard.transform.SetParent(Deck.transform.parent);
+
+        newCard.name = numberImageCorrection + "_di_" + semeCarta;
+        //this.transform.parent.FindChild(newCard.name).SetAsFirstSibling();
+        //Deck.transform.FindChild(newCard.name).SetAsFirstSibling();
+
         Image cardNumberImage = newCard.transform.FindChild("Number").GetComponent<Image>();
 
         Card cardScript = newCard.GetComponent<Card>();
@@ -123,7 +127,7 @@ public class GameController : MonoBehaviour {
         mazzo.Add(newCard);
         GameController.ListIndex++;
 
-        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 100.0f, MoveType.Speed, tableNumber, true));
+        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 250.0f, MoveType.Speed, tableNumber, true));
        
     }
 

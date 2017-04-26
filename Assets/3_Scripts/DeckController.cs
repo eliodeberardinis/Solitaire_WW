@@ -111,7 +111,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
             semeCarta = "Picche";
         }
 
-        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform);
+        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform, false);
         newCard.GetComponent<Card>().isFaceDown = true;
         newCard.name = numberImageCorrection + "_di_" + semeCarta;
 
@@ -123,7 +123,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         cardNumberImage.sprite = gameController.cardValueImageList[numberImageCorrection - 1];
         gameController.mazzo.Add(newCard);
 
-        StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 150.0f, GameController.MoveType.Speed, 0, false));
+        StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 350.0f, GameController.MoveType.Speed, 0, false));
         discardPile.discardPileList.Add(newCard);
         GameController.ListIndex++;
     }
