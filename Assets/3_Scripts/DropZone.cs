@@ -10,11 +10,12 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     public Card.Color thisColor = Card.Color.ROSSO;
     public int currentValue = 0;
     public List<GameObject> thisDropZoneList = new List<GameObject>();
+    public GameObject winningScreen;
     public Text winningScore;
     GameObject discardPile;
     GameObject[] allDropAreas;
     GameController gameController;
-    GameObject winningScreen;
+
     
 
     void Start()
@@ -22,7 +23,6 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
         discardPile = GameObject.FindGameObjectWithTag("DiscardPile");
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         allDropAreas = GameObject.FindGameObjectsWithTag("DropArea");
-        winningScreen = GameObject.FindGameObjectWithTag("WinScreen");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
