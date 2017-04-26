@@ -65,7 +65,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
 
        else if (deckList.Count != 0)
        {
-          StartCoroutine(gameController.Translation(deckList[deckList.Count - 1].transform, this.transform.position, pile.transform.position, 150.0f, GameController.MoveType.Speed, 0, false));
+          StartCoroutine(gameController.Translation(deckList[deckList.Count - 1].transform, this.transform.position, pile.transform.position, 300.0f, GameController.MoveType.Speed, 0, 1));
           discardPile.discardPileList.Add(deckList[deckList.Count - 1]);
           deckList.Remove(deckList[deckList.Count - 1]);
           GameController.moves += 1;
@@ -123,7 +123,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         cardNumberImage.sprite = gameController.cardValueImageList[numberImageCorrection - 1];
         gameController.mazzo.Add(newCard);
 
-        StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 350.0f, GameController.MoveType.Speed, 0, false));
+        StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 300.0f, GameController.MoveType.Speed, 0, 1));
         discardPile.discardPileList.Add(newCard);
         GameController.ListIndex++;
     }

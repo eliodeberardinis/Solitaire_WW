@@ -12,7 +12,8 @@ public class GameController : MonoBehaviour {
     public static bool isTranslationOn = false;
     public List<GameObject> mazzo = new List<GameObject>();
     public List<int> valoriMazzo = new List<int>();
-    public List<GameObject> TablePiles = new List<GameObject>();  
+    public List<GameObject> TablePiles = new List<GameObject>();
+    public List<GameObject> DropAreas = new List<GameObject>();
     public List<Sprite> cardValueImageList = new List<Sprite>();
     public GameObject Deck;
     public GameObject discardPile;
@@ -54,12 +55,6 @@ public class GameController : MonoBehaviour {
         }
        
     }
-
-    // Update is called once per frame
-    void Update ()
-    {
-		
-	}
 
     void ShuffleMazzo()
     {
@@ -128,12 +123,12 @@ public class GameController : MonoBehaviour {
         GameController.ListIndex++;
 
         //Add +45 on ipad +20 on PC for y, speed 100-150 on PC 250 on Ipad
-        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 100.0f, MoveType.Speed, tableNumber, true));
+        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 400.0f, MoveType.Speed, tableNumber, 0));
        
     }
 
 
-    public IEnumerator Translation(Transform thisTransform, Vector3 startPos, Vector3 endPos, float value, MoveType moveType, int tableNumber, bool isInitialization)
+    public IEnumerator Translation(Transform thisTransform, Vector3 startPos, Vector3 endPos, float value, MoveType moveType, int tableNumber, int translationType)
     {
         isTranslationOn = true;
         float rate = (moveType == MoveType.Time) ? 1.0f / value : 1.0f / Vector3.Distance(startPos, endPos) * value;
@@ -145,7 +140,7 @@ public class GameController : MonoBehaviour {
             yield return null;
         }
 
-        if (isInitialization)
+        if (translationType == 0)
         {
 
             //Getting a reference to the flipped card object and script
@@ -182,16 +177,29 @@ public class GameController : MonoBehaviour {
                 thisTablePileDrop.thisSeme = lastCard.thisSeme;
                 flippedTablePile.thisFlippedPileList.Remove(lastCard.gameObject);
                 thisTablePileDrop.thisPileList.Add(lastCard.gameObject);
-                
+
             }
         }
 
-        else
+        else if (translationType == 1)
         {
             Card thisCard = thisTransform.gameObject.GetComponent<Card>();
             StartCoroutine(thisCard.FlippingBackCardAnimation(thisTransform, new Vector3(0, -180, 0), 0.5f));
             thisTransform.SetParent(discardPile.transform);
             thisCard.parentToReturnTo = discardPile.transform;
+        }
+
+        else if (translationType == 2)
+        {
+            for (int i = 0; i < DropAreas.Count; ++i)
+            {
+                DropZone thisDropZone = DropAreas[i].GetComponent<DropZone>();
+                if (thisDropZone.thisSeme == thisTransform.gameObject.GetComponent<Card>().thisSeme)
+                {
+                    thisTransform.SetParent(thisDropZone.gameObject.transform);
+                    break;
+                }
+            }
         }
 
         isTranslationOn = false;
