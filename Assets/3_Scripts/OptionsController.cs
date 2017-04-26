@@ -34,6 +34,10 @@ public class OptionsController : MonoBehaviour {
 
     public void PauseGame()
     {
-        optionScreen.SetActive(true);
+        if (!Card.isFlippingOn && !GameController.isTranslationOn && !Card.isDragging)
+        {
+            optionScreen.SetActive(true);
+        }
+               
     }
 }
