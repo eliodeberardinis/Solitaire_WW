@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class OptionsController : MonoBehaviour {
 
-    GameObject winningScreen;
+    public GameObject optionScreen;
 
 	// Use this for initialization
 	void Start ()
     {
-        winningScreen = GameObject.FindGameObjectWithTag("WinScreen");
+        
 	}
 
 
@@ -25,5 +25,15 @@ public class OptionsController : MonoBehaviour {
         Card.isFlippingOn = false;
 
         SceneManager.LoadScene("1_GamePlay");
+    }
+
+    public void ResumeGame()
+    {
+        optionScreen.SetActive(false);
+    }
+
+    public void PauseGame()
+    {
+        optionScreen.SetActive(false);
     }
 }
