@@ -113,21 +113,27 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
         if (card.parentToReturnTo.GetChild(card.parentToReturnTo.childCount - 1) == cardObject.transform) //If it's the last card you can drop it if it's the right card
         {
-            Debug.Log("Correct Condition for parent");
+            //Debug.Log("Correct Condition for parent");
 
             if (card != null)
             {
-                Debug.Log("Card is not Null");
+               // Debug.Log("Card is not Null");
 
                 if ((thisSeme == card.thisSeme && card.value == currentValue + 1))
                 {
+                    GameController.score += 10;
+                    GameController.moves += 1;
+                    gameController.ScoreText.text = GameController.score.ToString();
+                    gameController.MovesText.text = GameController.moves.ToString();
+
                     thisDropZoneList.Add(card.gameObject);
-                    Debug.Log("Correct Seme and Value");
+
+                    //Debug.Log("Correct Seme and Value");
 
                     //Here get the reference to the previous parent and if it's a tablepile update the value. if it's the discard pile update that
                     if (card.parentToReturnTo.gameObject.tag == "FrontPile")
                     {
-                        Debug.Log("Correct Front Pile");
+                        //Debug.Log("Correct Front Pile");
                         //Getting references to the flipped and front list of its previous tablePile
                         TablePilesDrop oldPile = card.parentToReturnTo.gameObject.GetComponent<TablePilesDrop>();
                         FlippedTablePiles oldFlippedTablePile = oldPile.gameObject.GetComponentInParent<FlippedTablePiles>();

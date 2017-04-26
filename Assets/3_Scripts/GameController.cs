@@ -106,7 +106,7 @@ public class GameController : MonoBehaviour {
             semeCarta = "Picche";
         }
 
-        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform.position, Quaternion.Euler(new Vector3(0,180,0)), Deck.transform);
+        GameObject newCard = (GameObject)Instantiate(Resources.Load(name), this.transform.position, Quaternion.Euler(new Vector3(0,180,0)), this.transform);
         //GameObject newCard = (GameObject)Instantiate(Resources.Load(name), Deck.transform, false);
 
         newCard.GetComponent<Card>().isFaceDown = true;
