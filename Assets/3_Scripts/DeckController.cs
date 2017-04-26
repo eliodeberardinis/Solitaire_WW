@@ -67,7 +67,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
        //All cards instantiated, just flip each one at a time back into the discard pile
        else if (deckList.Count != 0)
        {
-          StartCoroutine(gameController.Translation(deckList[deckList.Count - 1].transform, this.transform.position, pile.transform.position, 400.0f, GameController.MoveType.Speed, 0, 1));
+          StartCoroutine(gameController.Translation(deckList[deckList.Count - 1].transform, this.transform.position, pile.transform.position, 0.2f, GameController.MoveType.Time, 0, 1));
           discardPile.discardPileList.Add(deckList[deckList.Count - 1]);
           deckList.Remove(deckList[deckList.Count - 1]);
           GameController.moves += 1;
@@ -116,7 +116,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         cardScript.value = numberImageCorrection;
         cardNumberImage.sprite = gameController.cardValueImageList[numberImageCorrection - 1];
         gameController.mazzo.Add(newCard);
-        StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 400.0f, GameController.MoveType.Speed, 0, 1));
+        StartCoroutine(gameController.Translation(newCard.transform, this.transform.position, pile.transform.position, 0.2f, GameController.MoveType.Time, 0, 1));
         discardPile.discardPileList.Add(newCard);
         GameController.ListIndex++;
     }

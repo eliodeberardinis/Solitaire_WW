@@ -101,7 +101,7 @@ public class GameController : MonoBehaviour {
         cardNumberImage.sprite = cardValueImageList[numberImageCorrection - 1];
         mazzo.Add(newCard);
         GameController.ListIndex++;
-        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 550.0f, MoveType.Speed, tableNumber, 0));      
+        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 350.0f, MoveType.Speed, tableNumber, 0));      
     }
 
     //Translation coroutine for the translation animation. Can be called by 3 different translation types: from deck to table, from deck to discard pile and from tables to the drop zones 

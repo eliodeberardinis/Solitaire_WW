@@ -131,7 +131,7 @@ public class DropZone : MonoBehaviour, IDropHandler
         {
             if (card != null)
             {
-                if ((thisSeme == card.thisSeme /*&& card.value == currentValue + 1*/))
+                if ((thisSeme == card.thisSeme && card.value == currentValue + 1))
                 {
                     GameController.score += 10;
                     GameController.moves += 1;
@@ -151,7 +151,7 @@ public class DropZone : MonoBehaviour, IDropHandler
                         currentValue = lastCard.value;
 
                         card.gameObject.transform.SetParent(this.gameObject.transform.parent.parent);
-                        StartCoroutine(gameController.Translation(card.gameObject.transform, card.gameObject.transform.position, new Vector3 ( this.gameObject.transform.position.x, this.gameObject.transform.position.y + 20, this.gameObject.transform.position.z), 550.0f, GameController.MoveType.Speed, 0, 2));
+                        StartCoroutine(gameController.Translation(card.gameObject.transform, card.gameObject.transform.position, new Vector3 ( this.gameObject.transform.position.x, this.gameObject.transform.position.y + 20, this.gameObject.transform.position.z), 0.2f, GameController.MoveType.Time, 0, 2));
 
                         if (oldPile.thisPileList.Count == 0) //If the front list has 0 cards
                         {
@@ -193,7 +193,7 @@ public class DropZone : MonoBehaviour, IDropHandler
                         currentValue = card.value;
                         discardPile.GetComponent<DiscardPile>().discardPileList.Remove(card.gameObject);
                         card.gameObject.transform.SetParent(this.gameObject.transform.parent.parent);
-                        StartCoroutine(gameController.Translation(card.gameObject.transform, card.gameObject.transform.position, new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 20, this.gameObject.transform.position.z), 500.0f, GameController.MoveType.Speed, 0, 2));
+                        StartCoroutine(gameController.Translation(card.gameObject.transform, card.gameObject.transform.position, new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 20, this.gameObject.transform.position.z), 0.2f, GameController.MoveType.Time, 0, 2));
                     }
 
                     //Check if player has won
