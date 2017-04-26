@@ -38,9 +38,7 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         {
             if ((thisColor != card.thisColor && card.value == currentValue - 1)) //Change it to only allow when there are not covered cards
             {
-                GameController.score += 5;
                 GameController.moves += 1;
-                gameController.ScoreText.text = GameController.score.ToString();
                 gameController.MovesText.text = GameController.moves.ToString();
 
                 //Here get the reference to the previous parent and if it's a tablepile update the value. if it's the discard pile update that
@@ -77,6 +75,9 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                         //Check if the back cards have any cards left
                         if (oldFlippedTablePile.gameObject.transform.childCount > 1)
                         {
+                            GameController.score += 5;
+                            gameController.ScoreText.text = GameController.score.ToString();
+
                             Card lastFlippedCard = oldFlippedTablePile.thisFlippedPileList[oldFlippedTablePile.thisFlippedPileList.Count - 1].GetComponent<Card>();
                             Debug.Log("Last Flipped Card: " + lastFlippedCard.gameObject);
                             oldPile.currentValue = lastFlippedCard.value;
@@ -111,6 +112,9 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 //If the card comes from a discard Pile
                 else if (card.parentToReturnTo.gameObject.tag == "DiscardPile")
                 {
+                    GameController.score += 5;
+                    gameController.ScoreText.text = GameController.score.ToString();
+
                     card.parentToReturnTo = this.transform;
                     currentValue = card.value;
                     thisColor = card.thisColor;
@@ -123,6 +127,10 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
 
                 else if (card.parentToReturnTo.gameObject.tag == "DropArea")
                 {
+                    GameController.score -= 15;
+                    if (GameController.score < 0) { GameController.score = 0; }
+                    gameController.ScoreText.text = GameController.score.ToString();
+
                     //Here Update the DropArea
                     card.parentToReturnTo.gameObject.GetComponent<DropZone>().thisDropZoneList.RemoveAt(0);
                     card.parentToReturnTo.gameObject.GetComponent<DropZone>().currentValue -= 1;

@@ -127,7 +127,8 @@ public class GameController : MonoBehaviour {
         mazzo.Add(newCard);
         GameController.ListIndex++;
 
-        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 250.0f, MoveType.Speed, tableNumber, true));
+        //Add +45 on ipad +20 on PC for y, speed 100-150 on PC 250 on Ipad
+        StartCoroutine(Translation(newCard.transform, newCard.transform.position, new Vector3(TablePiles[tableNumber].transform.position.x, TablePiles[tableNumber].transform.position.y + 20, TablePiles[tableNumber].transform.position.z) , 100.0f, MoveType.Speed, tableNumber, true));
        
     }
 
