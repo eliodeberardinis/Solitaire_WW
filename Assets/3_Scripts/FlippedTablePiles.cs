@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class FlippedTablePiles : MonoBehaviour {
 
+    //Another DATA ONLY script to handle the reversed cards in the table
     public List<GameObject> thisFlippedPileList = new List<GameObject>();
-
-    // Use this for initialization
-    void Start ()
-    {
-		
-	}
-	
 
 }

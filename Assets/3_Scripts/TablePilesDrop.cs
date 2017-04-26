@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
+public class TablePilesDrop : MonoBehaviour, IDropHandler
 {
-
+    //This script is given to the table piles to control their behaviour when a card is dropped on them
     public Card.Seme thisSeme = Card.Seme.CUORI;
     public Card.Color thisColor = Card.Color.ROSSO;
     public int currentValue = 0;
@@ -19,20 +19,9 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        //Debug.Log("Enter");
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        //Debug.Log("Exit");
-    }
-
+    //Same concept of the drop area but slightly different behaviour. TO DO Repetition (Refactor by combining his and the other into a single function like for translate in gameController)
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log(eventData.pointerDrag.name + "Placed on: " + gameObject.name);
-
         Card card = eventData.pointerDrag.GetComponent<Card>();
         if (card != null)
         {
@@ -90,7 +79,6 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                             lastFlippedCard.parentToReturnTo = oldPile.gameObject.transform;
                             StartCoroutine(lastFlippedCard.FlippingBackCardAnimation(lastFlippedCard.gameObject.transform, new Vector3(0, -180, 0), 0.5f));
                         }
-
                         else
                         {
                             oldPile.currentValue = 14;
@@ -106,7 +94,6 @@ public class TablePilesDrop : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                         oldPile.thisColor = nextCardInList.thisColor; ;
                         oldPile.thisSeme = nextCardInList.thisSeme;
                     }
-
                 }
 
                 //If the card comes from a discard Pile
