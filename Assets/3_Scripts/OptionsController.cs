@@ -34,6 +34,6 @@ public class OptionsController : MonoBehaviour {
 
     public void PauseGame()
     {
-        optionScreen.SetActive(false);
+        optionScreen.SetActive(true);
     }
 }
